@@ -1,15 +1,28 @@
-import os, json, datetime
+import mysql.connector
 
-# 保存先のファイルを指定 --- (*1)
-BASE_DIR = os.path.dirname(__file__)
-SAVE_FILE = BASE_DIR + '/data/log.json'
 
-# ログファイル(JSON形式)を読み出す --- (*2)
+#DB接続情報
+def conn_db():
+      conn = mysql.connector.connect(
+              host = '127.0.0.1',      #localhostでもOK
+              user = 'mysql',
+              passwd = 'mysql1234',
+              db = 'test1'
+      )
+      return conn
+
+# DBからデータを読み出す　ログファイル(JSON形式)を読み出す --- (*2)
 def load_data():
-    if not os.path.exists(SAVE_FILE):
+    sql = 'SELECT * FROM input'
+    try:
+        conn = conn_db()              #ここでDBに接続
+        cursor = conn.cursor()       #カーソルを取得
+        cursor.execute(sql)             #selectを投げる
+        rows = cursor.fetchall()      #selectの結果を全件タプルに格納
+        return rows
+    except(mysql.connector.errors.ProgrammingError) as e:
         return []
-    with open(SAVE_FILE, 'rt', encoding='utf-8') as f:
-        return json.load(f)
+
 
 # ログファイルへ書き出す --- (*3)
 def save_data(data_list):

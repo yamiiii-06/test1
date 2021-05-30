@@ -27,8 +27,8 @@
   <!-- 掲示板のログを表示する === (*2) -->
   {% for i in data %}
     <div class="box">
-      <p class="box_h">{{ i.name }} - {{ i.date }}</p>
-      <p>{{ i.text }}</p>
+      <p class="box_h">{{ i[1] }} - {{ i[3] }}</p>
+      <p>{{ i[2] }}</p>
     </div>
   {% endfor %}
   <!-- ハンバーグメニューの開閉処理 === (*3) -->

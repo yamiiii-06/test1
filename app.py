@@ -1,6 +1,7 @@
 from flask import Flask, redirect, url_for, session
 from flask import render_template, request
 import os, json, datetime
+import mysql.connector
 import bbs_login # ログイン管理モジュール --- (*1)
 import bbs_data  # データ入出力用モジュール --- (*2)
 
@@ -40,7 +41,7 @@ def try_login():
 def logout():
     bbs_login.try_logout()
     return show_msg('ログアウトしました')
-
+    
 # 書き込み処理 --- (*9)
 @app.route('/write', methods=['POST'])
 def write():

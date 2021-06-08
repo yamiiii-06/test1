@@ -1,9 +1,10 @@
 from flask import Flask, redirect, url_for, session
 from flask import render_template, request
-import os, json, datetime
-import mysql.connector
+from flask_debug import Debug
+import os, datetime
 import bbs_login # ログイン管理モジュール --- (*1)
 import bbs_data  # データ入出力用モジュール --- (*2)
+
 
 # Flaskインスタンスと暗号化キーの指定
 app = Flask(__name__)
@@ -41,7 +42,7 @@ def try_login():
 def logout():
     bbs_login.try_logout()
     return show_msg('ログアウトしました')
-    
+
 # 書き込み処理 --- (*9)
 @app.route('/write', methods=['POST'])
 def write():
@@ -52,7 +53,7 @@ def write():
     ta = request.form.get('ta', '')
     if ta == '': return show_msg('書込が空でした。')
     # データに追記保存 --- (*12)
-    bbs_data.save_data_append(
+    bbs_data.save_data(
             user=bbs_login.get_user(),
             text=ta)
     return redirect('/')

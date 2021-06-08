@@ -17,15 +17,15 @@
       </li>
     </ul>
   </div>
-  <form action="/write" method="POST"
+  <form action="/edit" method="POST"
       class="pure-form pure-form-stacked">
     <textarea name="ta" rows="4" cols="60"value="" placeholder="コメント入力"></textarea>
-    <button type="submit" class="pure-button pure-button-primary">書き込む</button>
+    <button type="submit" class="pure-button pure-button-primary">編集</button>
   </form>
   <!-- 掲示板のログを表示する -->
   {% for i in data %}
     <div class="box">
-      <p class="box_h"><a href="./edit/{{i[0]}}">{{ i[0] }}</a> - {{ i[1] }} - {{ i[3] }}</p>
+      <p class="box_h"><a href="./edit/{{user[0]}}">{{ i[0] }}</a> - {{ i[1] }} - {{ i[3] }}</p>
       <p>{{ i[2] }}</p>
     </div>
   {% endfor %}

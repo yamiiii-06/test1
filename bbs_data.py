@@ -11,34 +11,59 @@ def conn_db():
       )
       return conn
 
-# DBからデータを読み出す--- (*2)
+
+# 掲示板データ読み込み
 def load_data():
+    conn = conn_db()            #DB接続
+    cursor = conn.cursor()      #カーソルを取得   
     sql = 'SELECT * FROM input'
-    conn = conn_db()              #ここでDBに接続
-    cursor = conn.cursor()       #カーソルを取得
-    cursor.execute(sql)             #selectを投げる
-    rows = cursor.fetchall()      #selectの結果を全件タプルに格納
+    cursor.execute(sql)         #実行
+    rows = cursor.fetchall()    #結果を全件タプルに格納
+    cursor.close()              #カーソル終了
+    conn.close()                #DB切断
     return rows
 
-# ログファイルへ書き出す --- (*3)
-#def save_data(data_list):
-#    with open(SAVE_FILE, 'wt', encoding='utf-8') as f:
-#       json.dump(data_list, f)
+# 指定レコード読み込み
+def load_record(id):
+    conn = conn_db()            #DB接続
+    cursor = conn.cursor()      #カーソルを取得   
+    sql = 'SELECT * FROM input WHERE id=%s'
+    cursor.execute(sql, [id])     #実行
+    rows = cursor.fetchall()    #結果を全件タプルに格納
+    cursor.close()              #カーソル終了
+    conn.close()                #DB切断
+    return rows
 
-# DBへ書き込み --- (*4)
+# 書き込みデータをinputテーブルへ書き込み
 def save_data(user, text):
-    conn = conn_db()   #コネクションが切れたときに再接続してくれるように設定
-    cursor = conn.cursor()                  #カーソル取得
-    # レコードを用意
-    tm = get_datetime_now()
-    data = (user, text, tm)
-    sql = "INSERT INTO input(name,text,date) VALUES(%s,%s,%s)"
-    #レコード挿入
-    cursor.execute(sql,data)
-# 先頭にレコードを追記して保存 --- (*5)
-#data_list = load_data()
-#data_list.insert(0, data)
-#save_data(data_list)
+    try:
+        conn = conn_db()            #DB接続
+        cursor = conn.cursor()      #カーソル取得
+        # レコードを用意
+        tm = get_datetime_now()
+        data = (user, text, tm)
+        sql = "INSERT INTO input(name,text,date) VALUES(%s,%s,%s)"
+        cursor.execute(sql,data)    #実行
+        conn.commit()               #コミット
+    except:
+        print('例外発生')
+    else:
+        print('')
+    finally:
+        cursor.close()              #カーソル終了
+        conn.close()                #DB切断
+
+# レコードのユーザ確認
+def get_recorduser(id):
+    conn = conn_db()            #DB接続
+    cursor = conn.cursor()      #カーソルを取得   
+    sql = 'SELECT name FROM input WHERE id=%s'
+    cursor.execute(sql, [id])     #実行
+    rows = cursor.fetchall()    #結果を全件タプルに格納
+    cursor.close()              #カーソル終了
+    conn.close()                #DB切断
+    return rows[0]
+
 
 # 日時を文字列で得る
 def get_datetime_now():

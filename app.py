@@ -21,7 +21,7 @@ def index():
             user=bbs_login.get_user(),
             data=bbs_data.load_data())
 
-#　編集画面を表示
+# 編集画面を表示
 @app.route('/edit/<int:id>')
 def edit(id):
     # ログインが必要
@@ -29,14 +29,13 @@ def edit(id):
         return redirect('/login')
     # loginユーザと編集レコードのユーザ一致を確認
     loginuser = bbs_login.get_user()
-    print(loginuser)
     recorduser = bbs_data.get_recorduser(id)
-    print(recorduser[0])
     if loginuser != recorduser[0]:
         return show_msg('編集できません')
+    data=bbs_data.load_record(id)
     return render_template('edit.html',
-            user=recorduser,
-            data=bbs_data.load_record(id))
+            user=recorduser[0],
+            data=data[0])
 
 # ログイン画面を表示
 @app.route('/login')
@@ -75,8 +74,38 @@ def write():
             text=ta)
     return redirect('/')
 
+# 変更処理
+@app.route('/edit', methods=['POST'])
+def try_edit():
+    # ログインが必要
+    if not bbs_login.is_login():
+        return redirect('/login')
+    # フォームを取得
+    id = request.form.get('ed-id', '')
+    ta = request.form.get('ta', '')
+    if ta == '': return show_msg('書込が空でした。')
+    # データを変更して保存
+    bbs_data.edit_data(
+            id=id,
+            text=ta)
+    return redirect('/')
+
+# 削除処理
+@app.route('/delete', methods=['POST'])
+def try_delete():
+    # ログインが必要
+    if not bbs_login.is_login():
+        return redirect('/login')
+    # フォームを取得
+    id = request.form.get('de-id', '')
+    # 指定レコードを削除
+    bbs_data.delete_data(
+            id=id)
+    return redirect('/')
+
 # テンプレートを利用してメッセージを出力
 def show_msg(msg):
+    
     return render_template('msg.html', msg=msg)
 
 if __name__ == '__main__':

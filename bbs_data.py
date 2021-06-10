@@ -64,6 +64,43 @@ def get_recorduser(id):
     conn.close()                #DB切断
     return rows[0]
 
+#指定レコードのtextデータ変更
+def edit_data(id,text):
+    try:
+        conn = conn_db()            #DB接続
+        cursor = conn.cursor()      #カーソル取得
+        # レコードを用意
+        tm = get_datetime_now()
+        data = (text, tm, int(id))
+        print(data)
+        sql = "UPDATE input SET text=%s, date=%s where id=%s"
+        cursor.execute(sql,data)    #実行
+        conn.commit()               #コミット
+    except:
+        print('例外発生')
+    else:
+        print('')
+    finally:
+        cursor.close()              #カーソル終了
+        conn.close()                #DB切断id
+
+#指定レコード削除
+def delete_data(id):
+    try:
+        conn = conn_db()            #DB接続
+        cursor = conn.cursor()      #カーソル取得
+        # レコードを用意
+        sql = "delete from input where id=%s"
+        cursor.execute(sql,[id])    #実行
+        conn.commit()               #コミット
+    except:
+        print('例外発生')
+    else:
+        print('')
+    finally:
+        cursor.close()              #カーソル終了
+        conn.close()                #DB切断
+
 
 # 日時を文字列で得る
 def get_datetime_now():

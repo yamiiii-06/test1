@@ -6,41 +6,15 @@
   <link rel="stylesheet" href="static/pure-min.css">
   <link rel="stylesheet" href="static/style.css?v=0220">
 </head><body><div class="content">
-  <!-- 書き込みフォーム -->
-  <h1><a id="menu-switch" href="#">≡</a>
-    会員制の掲示板 - {{ user }}</h1>
-  <!-- メニュー -->
-  <div id="menu" class="pure-menu pure-u-2-5">
-    <ul class="pure-menu-list">
-      <li class="pure-menu-item">
-        <a href="/logout" class="pure-menu-link">→ログアウト</a>
-      </li>
-    </ul>
-  </div>
-  <form action="/edit" method="POST"
-      class="pure-form pure-form-stacked">
-    <textarea name="ta" rows="4" cols="60"value="" placeholder="コメント入力"></textarea>
-    <button type="submit" class="pure-button pure-button-primary">編集</button>
+  
+  <h1>会員制の掲示板 - {{ user }}</h1>
+  <!-- 削除/変更フォーム -->
+  <form method="POST" class="pure-form pure-form-stacked">
+    <button name="de-id" formaction="/delete" type="submit" class="pure-button pure-button-primary" value={{data[0]}}>削除</button>
+    <button name="ed-id" formaction="/edit" type="submit" class="pure-button pure-button-primary" value={{data[0]}}>変更</button>
+    <p class="box_h">{{ data[0] }} - {{ data[1] }} - {{ data[3] }}</p>
+    <textarea name="ta" rows="4" cols="60"value="" placeholder="コメント入力">{{ data[2] }}</textarea>
   </form>
-  <!-- 掲示板のログを表示する -->
-  {% for i in data %}
-    <div class="box">
-      <p class="box_h"><a href="./edit/{{user[0]}}">{{ i[0] }}</a> - {{ i[1] }} - {{ i[3] }}</p>
-      <p>{{ i[2] }}</p>
-    </div>
-  {% endfor %}
-  <!-- ハンバーグメニューの開閉処理 -->
-  <script>
-  function $(id) { return document.querySelector(id) }
-  $("#menu-switch")._b = false
-  $("#menu-switch").onclick = ()=>{
-    $("#menu-switch")._b = !$("#menu-switch")._b
-    if ($("#menu-switch")._b) {
-      $("#menu").style.display = "block"
-    } else {
-      $("#menu").style.display = "none"
-    }
-  }
-  </script>
+
 </div></body></html>
 
